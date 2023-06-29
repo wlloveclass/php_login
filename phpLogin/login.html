@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学生登陆</title>
+    <script src="jquery.min.js"></script>
+    <!--记得先引入jquery库-->
+    <style>
+        body {
+            /* background-color: #55bb8a; */
+            background-color: #ed5a65;
+        }
+
+        button:focus {
+            outline: none;
+        }
+
+        .login-bg {
+            width: 70%;
+            margin: 100px auto;
+            background: rgba(255, 255, 255, .5);
+            min-height: 400px;
+            display: table;
+            position: relative;
+            box-shadow: 0 0 4px rgba(0, 0, 0, .14), 0 4px 8px rgba(0, 0, 0, .28);
+        }
+
+        .login-bg>div {
+            display: table-cell;
+            vertical-align: middle;
+            text-align: center;
+            color: #fff;
+        }
+
+        .btn1,
+        .btn2,
+        .dark {
+            /* background-color: #fff; */
+            display: inline-block;
+            padding: 10px 30px;
+            /* border: 3px solid rgb(36, 244, 195);ed5a65 */
+            border: 3px solid #ed5a65;
+            border-radius: 50px;
+            position: relative;
+            color: rgb(109, 12, 12);
+        }
+
+        .btn-border {
+            border: 3px solid #55bb8a;
+        }
+
+        .wrapper {
+            position: absolute;
+            width: 40%;
+            height: 120%;
+            top: -10%;
+            left: 5%;
+            background: #fff;
+            box-shadow: 0 0 4px rgba(0, 0, 0, .14), 0 4px 8px rgba(0, 0, 0, .28);
+            transition: all .5s;
+            color: #303030;
+            overflow: hidden;
+        }
+
+        form {
+            margin: auto;
+            padding: 15px 30px 30px 30px;
+            width: 80%;
+            transition: all .5s;
+            background: #fff;
+            height: 80%;
+        }
+
+        #login {
+            padding-top: 20%;
+            /* display: none; */
+        }
+
+        #register {
+            padding-top: 20%;
+            display: none;
+        }
+
+        form>div {
+            margin: 10px 0;
+            padding: 1px;
+            position: relative;
+        }
+
+        .dark {
+            border: none !important;
+            /* background-color: #55bb8a; */
+            background-color: #ed5a65;
+        }
+
+        form>div input {
+            width: 100%;
+            height: 40px;
+            border: solid 1px #999;
+            background-color: white;
+        }
+
+        .wrapper label {
+            position: absolute;
+            top: -7px;
+            font-size: 12px;
+            white-space: nowrap;
+            background: #fff;
+            text-align: left;
+            left: 15px;
+            padding: 0 5px;
+            color: #999;
+            pointer-events: none;
+        }
+
+        label {
+            display: inline-block;
+            max-width: 100%;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        h3 {
+            font-size: 18px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            color: red;
+        }
+
+        .dark {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .btn1,
+        .btn2 {
+            color: #737c7b;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        button:hover {
+            cursor: pointer;
+        }
+
+        .dark:active {
+            opacity: 0.7;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-bg">
+        <div class="login-btn">
+            <p>欢迎同学回到校园留言板！</p>
+            <button class="btn1">登陆</button>
+        </div>
+        <div class="register-btn">
+            <p>欢迎加入我们！</p>
+            <button class="btn2">注册</button>
+        </div>
+        <div class="wrapper">
+            <form id="login">
+                <h3>登陆</h3>
+                <div class="Sno">
+                    <input type="text" name="Sno" id="Sno">
+                    <label>学号/工号</label>
+                </div>
+                <div class="password">
+                    <input type="password" name="password" id="password">
+                    <label>登录密码</label>
+                </div>
+                <div class="submit">
+                    <button class="dark">登陆</button>
+                </div>
+                <script>
+                    $(function () {
+                        //当点击切换按扭时，清空输入框的内容
+                        $('.btn1,.btn2').on('click', function () {
+                            $('input').val('');
+                        })
+                        $('#login,#register').children().children('.dark').on('click', function (e) {
+                            e.preventDefault();//阻止表单默认提交行为
+                        })
+                        $('#login').children().children('.dark').on('click', function (e) {
+                            var Sno = $('#Sno').val();
+                            var password = $('#password').val();
+                            console.log(Sno, password)
+                            $.ajax({
+                                type: "post",
+                                url: "http://localhost:8080/students/login.php",
+                                data: 'Sno=' + Sno + '&password=' + password,
+                                dataType: 'json',
+                                success: function (res) {
+                                    if (res.status == 201) {
+                                        //登陆成功清空输入框
+                                        $('input').val('');
+                                        alert(res.msg);
+                                        window.location.assign(res.href);
+                                    }
+                                    else {
+                                        alert(res.msg);
+                                    }
+                                }
+                            });
+                        })
+                    })
+
+                </script>
+            </form>
+            <!-- 注册模块 -->
+            <form id="register">
+                <h3 style="color:#55bb8a ;">注册</h3>
+                <div class="Sno">
+                    <input type="text" name="Sno" id="rSno">
+                    <label>学号/工号</label>
+                </div>
+                <div class="Sname">
+                    <input type="text" name="Sname" id="rSname">
+                    <label>昵称</label>
+                </div>
+                <div class="password">
+                    <input type="password" name="password" id="rpassword">
+                    <label>登陆密码</label>
+                </div>
+                <div class="submit">
+                    <button class="dark">注册</button>
+                </div>
+            </form>
+            <script>
+                $(function () {
+                    $('#register').children().children('.dark').on('click', function (e) {
+                        var Sno = $('#rSno').val();
+                        var Sname = $('#rSname').val();
+                        var password = $('#rpassword').val();
+                        console.log(Sno, password, Sname)
+                        $.ajax({
+                            type: "post",
+                            url: "http://localhost:8080/students/register.php",
+                            data: 'Sno=' + Sno + '&password=' + password + '&Sname=' + Sname,
+                            dataType: 'json',
+                            success: function (res) {
+                                if (res.status == 201) {
+                                    //注册成功清空输入框
+                                    $('input').val('');
+                                    alert(res.msg);
+                                }
+                                else {
+                                    alert(res.msg);
+                                }
+                            }
+                        });
+                    })
+                })
+
+            </script>
+        </div>
+    </div>
+</body>
+<script>
+    $(function () {
+        $('.btn2').on('click', function () {
+            $(this).parent().css({
+                visibility: 'hidden',
+                opacity: 0.1, //过渡效果我采用了透明做渐变
+                transition: 'linear 0.2s'
+            }).siblings().children(".btn1").addClass("btn-border")
+            $('.wrapper').animate({ left: "55%" }, 150)
+            $('#login').hide(75).siblings().show(75).children().children('.dark').css({
+                backgroundColor: '#55bb8a',
+                transition: 'linear 0.2s'
+            })//75,150是毫秒，可以不设置
+            $("body").css({
+                transition: 'linear 0.5s',
+                backgroundColor: '#55bb8a'
+            })
+        })
+        $('.btn1').on('click', function () {
+            $(this).parent().siblings().css({
+                visibility: 'visible',
+                opacity: 1, //过渡效果我采用了透明做渐变
+                transition: 'linear 0.2s'
+            })
+            $('.wrapper').animate({ left: "5%" }, 150)
+            $('#login').show().siblings().hide().children().children('.dark').css({
+                backgroundColor: '#ed5a65',
+                transition: 'linear 0.2s'
+            })//75,150是毫秒，可以不设置
+            $("body").css({
+                transition: 'linear 0.5s',
+                backgroundColor: '#ed5a65'
+            })
+        })
+    })
+</script>
+
+</html>
